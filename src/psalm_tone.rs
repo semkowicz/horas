@@ -1,3 +1,4 @@
+use std::fs;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
@@ -37,5 +38,15 @@ impl PsalmTone {
         }
 
         Ok(lines)
+    }
+
+    pub fn install_gabc(self, number: u32, tone: &str, target_dir: &Path) -> Result<(), String> {
+        let gabc = format!("{number}-{tone}.gabc");
+        let target_file = target_dir.join(&gabc);
+
+        fs::copy(self.tones_dir.join(gabc), target_file)
+            .map_err(|e| format!("Failed to install gabc file: {e}"))?;
+
+        Ok(())
     }
 }
