@@ -1,31 +1,27 @@
-use crate::psalm_builder::PsalmBuilder;
 use anyhow::{Context, Result};
 use clap::Parser;
+use std::path::PathBuf;
 
 mod config;
 mod divinum_officium;
 mod psalm_builder;
 mod psalm_tone_tool;
+mod vespers;
 
 /// Tool for creating Liturgia Horarum booklets
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
-    /// Psalm number
+    /// Vesperae configuration file
     #[clap(required = true)]
-    psalm: u32,
-
-    /// Tone
-    #[clap(required = true)]
-    tone: String,
+    file: PathBuf,
 }
 
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    let psalm_builder = PsalmBuilder::new().context("Failed to create PsalmBuilder")?;
-
-    psalm_builder
-        .build_psalm(args.psalm, &args.tone)
-        .context("Failed to build psalm")
+    vespers::Vespers::load_from_file(&args.file)
+        .context("Failed to load vespers configuration")?
+        .build()
+        .context("Failed to build vespers")
 }
