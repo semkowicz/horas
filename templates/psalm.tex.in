@@ -1,0 +1,11 @@
+\gresetinitiallines{0}
+\gregorioscore[a]{@FIRST_VERSE_PATH@}
+\gresetinitiallines{1}
+
+\begin{center}
+\textit{@FIRST_VERSE_TRANSLATION@}
+\end{center}
+
+\begin{xltabular}{\textwidth}{ @{}r | X | X@{} }
+@VERSES_TABLE@
+\end{xltabular}
