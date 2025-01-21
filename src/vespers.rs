@@ -11,8 +11,14 @@ struct Psalm {
 }
 
 #[derive(Deserialize)]
+struct Magnificat {
+    tone: String,
+}
+
+#[derive(Deserialize)]
 pub struct Vespers {
     psalms: Vec<Psalm>,
+    magnificat: Magnificat,
 }
 
 impl Vespers {
@@ -36,6 +42,10 @@ impl Vespers {
                 .build_psalm(psalm.number, &psalm.tone)
                 .context(format!("Failed to build psalm {}", psalm.number))?;
         }
+
+        psalm_builder
+            .build_magnificat(&self.magnificat.tone)
+            .context("Failed to build magnificat")?;
 
         Ok(())
     }

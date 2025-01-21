@@ -64,6 +64,23 @@ impl PsalmBuilder {
 
         Ok(())
     }
+
+    pub fn build_magnificat(&self, tone: &str) -> Result<()> {
+        println!("Building Magnificat tone {}", tone);
+
+        let magnificat_gabc = self
+            .psalm_tone_tool
+            .magnificat(tone)
+            .gabc()
+            .context("Failed to read Magnificat gabc")?;
+
+        let target_dir = Path::new("./magnificat").to_owned();
+        let target_path = target_dir.join(format!("Magnificat-{}.gabc", tone));
+        fs::write(&target_path, magnificat_gabc)
+            .context(format!("Unable to write {}", target_path.display()))?;
+
+        Ok(())
+    }
 }
 
 fn create_verses_table(tone: &Vec<String>, translation: &Vec<String>) -> String {
