@@ -17,3 +17,6 @@ tone = "8G"
 [[psalms]]
 number = 147
 tone = "7a"
+
+[magnificat]
+tone = "1D"
