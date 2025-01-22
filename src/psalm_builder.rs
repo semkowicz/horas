@@ -1,5 +1,6 @@
 use crate::config;
 use crate::divinum_officium::DivinumOfficium;
+use crate::gabc::Gabc;
 use crate::psalm_tone_tool::PsalmToneTool;
 use anyhow::{Context, Result};
 use std::fs;
@@ -74,10 +75,20 @@ impl PsalmBuilder {
             .gabc()
             .context("Failed to read Magnificat gabc")?;
 
+        let verses_gabc = Gabc::from_string(&magnificat_gabc)
+            .context("Failed to parse gabc")?
+            .split_verses();
+
         let target_dir = Path::new("./magnificat").to_owned();
-        let target_path = target_dir.join(format!("Magnificat-{}.gabc", tone));
-        fs::write(&target_path, magnificat_gabc)
-            .context(format!("Unable to write {}", target_path.display()))?;
+
+        let mut count: u32 = 1;
+        for verse in verses_gabc {
+            let verse_str = verse.to_string();
+            let verse_path = target_dir.join(format!("Magnificat-{tone}-p{count}.gabc"));
+            fs::write(&verse_path, verse_str)
+                .context(format!("Unable to write {}", verse_path.display()))?;
+            count += 1;
+        }
 
         Ok(())
     }
