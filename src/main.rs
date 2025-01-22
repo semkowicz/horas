@@ -4,6 +4,7 @@ use std::path::PathBuf;
 
 mod config;
 mod divinum_officium;
+mod gabc;
 mod psalm_builder;
 mod psalm_tone_tool;
 mod vespers;
