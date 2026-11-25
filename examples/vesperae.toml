@@ -1,20 +1,25 @@
 [[psalms]]
+src_uri = "gregobase://4181"
 number = 109
 tone = "7c"
 
 [[psalms]]
+src_uri = "gregobase://4182"
 number = 110
 tone = "1f"
 
 [[psalms]]
+src_uri = "gregobase://9365"
 number = 111
 tone = "7c"
 
 [[psalms]]
+src_uri = "gregobase://18962"
 number = 112
 tone = "8G"
 
 [[psalms]]
+src_uri = "gregobase://9367"
 number = 147
 tone = "7a"
 

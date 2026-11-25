@@ -1,11 +1,14 @@
+use crate::fetcher::fetch;
 use crate::psalm_builder::PsalmBuilder;
 use anyhow::{Context, Result};
 use serde::Deserialize;
 use std::fs;
 use std::path::Path;
+use url::Url;
 
 #[derive(Deserialize)]
 struct Psalm {
+    src_uri: Option<Url>,
     number: u32,
     tone: String,
 }
@@ -36,6 +39,10 @@ impl Vespers {
         let psalm_builder = PsalmBuilder::new().context("Failed to create PsalmBuilder")?;
 
         for psalm in self.psalms {
+            if let Some(src_uri) = psalm.src_uri {
+                fetch(&src_uri).context(format!("Failed to fetch: {src_uri}"))?;
+            }
+
             println!("Building psalm {} tone {}", psalm.number, psalm.tone);
 
             psalm_builder
