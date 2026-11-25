@@ -1,16 +1,17 @@
-use crate::config;
 use crate::divinum_officium::DivinumOfficium;
 use crate::gabc::Gabc;
 use crate::psalm_tone_tool::PsalmToneTool;
+use crate::{config, helper};
 use anyhow::{Context, Result};
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 pub(crate) struct PsalmBuilder {
     divinum_officium: DivinumOfficium,
     psalm_tone_tool: PsalmToneTool,
-    target_dir: PathBuf,
     templates_dir: PathBuf,
+    psalms_dir: PathBuf,
+    magnificat_dir: PathBuf,
 }
 
 impl PsalmBuilder {
@@ -24,13 +25,15 @@ impl PsalmBuilder {
             .context("Failed to construct PsalmToneTool directory path")?
             .join("templates");
 
-        let target_dir = Path::new("./psalms").to_owned();
+        let psalms_dir = helper::create_local_dir("psalmi")?;
+        let magnificat_dir = helper::create_local_dir("magnificat")?;
 
         Ok(Self {
             divinum_officium,
             psalm_tone_tool,
-            target_dir,
             templates_dir,
+            psalms_dir,
+            magnificat_dir,
         })
     }
 
@@ -41,7 +44,7 @@ impl PsalmBuilder {
         let filename_head = format!("{}-{}", number, tone);
 
         let first_verse = psalm_tone.first_verse_tone()?;
-        let first_verse_path = self.target_dir.join(filename_head.clone() + ".gabc");
+        let first_verse_path = self.psalms_dir.join(filename_head.clone() + ".gabc");
         fs::write(&first_verse_path, first_verse).context("Unable to write gabc file")?;
 
         let first_verse_tr = &psalm_translation[0];
@@ -60,7 +63,7 @@ impl PsalmBuilder {
             .replace("@FIRST_VERSE_TRANSLATION@", first_verse_tr)
             .replace("@VERSES_TABLE@", &verses_table);
 
-        let tex_path = self.target_dir.join(filename_head + ".tex");
+        let tex_path = self.psalms_dir.join(filename_head + ".tex");
         fs::write(tex_path, tex).context("Unable to write tex file")?;
 
         Ok(())
@@ -79,12 +82,12 @@ impl PsalmBuilder {
             .context("Failed to parse gabc")?
             .split_verses();
 
-        let target_dir = Path::new("./magnificat").to_owned();
-
         let mut count: u32 = 1;
         for verse in verses_gabc {
             let verse_str = verse.to_string();
-            let verse_path = target_dir.join(format!("Magnificat-{tone}-p{count}.gabc"));
+            let verse_path = self
+                .magnificat_dir
+                .join(format!("Magnificat-{tone}-p{count}.gabc"));
             fs::write(&verse_path, verse_str)
                 .context(format!("Unable to write {}", verse_path.display()))?;
             count += 1;

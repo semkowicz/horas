@@ -1,14 +1,12 @@
+use crate::helper;
 use anyhow::{Context, Result, bail};
-use std::fs::{File, create_dir};
+use std::fs::File;
 use std::io;
 use std::path::{Path, PathBuf};
 use url::Url;
 
 pub fn fetch(url: &Url) -> Result<PathBuf> {
-    let downloads_dir = Path::new("downloads");
-    if !downloads_dir.exists() {
-        create_dir(downloads_dir).context("Failed to create downloads directory")?
-    }
+    let downloads_dir = helper::create_local_dir("downloads")?;
 
     let (resolved_url, file_name) = match url.scheme() {
         "gregobase" => gregobase_to_full_url(url)?,

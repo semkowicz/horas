@@ -6,6 +6,7 @@ mod config;
 mod divinum_officium;
 mod fetcher;
 mod gabc;
+mod helper;
 mod psalm_builder;
 mod psalm_tone_tool;
 mod vespers;
